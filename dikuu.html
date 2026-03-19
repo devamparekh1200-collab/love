@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Diya — From My Heart</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Great+Vibes&family=Lato:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+    --ink:     #1a0a0a;
+    --cream:   #fdf6ee;
+    --rose:    #c8445a;
+    --blush:   #f2c4ce;
+    --faded:   #8a6060;
+    --paper:   #faf0e6;
+    --tear:    rgba(200,68,90,0.12);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+}
+
+/* ── CURSOR ── */
+#cur {
+    position: fixed; width:14px; height:14px;
+    background: var(--rose); border-radius:50%;
+    pointer-events:none; z-index:9999;
+    transform:translate(-50%,-50%);
+    mix-blend-mode: multiply;
+    transition: width .2s, height .2s;
+}
+
+/* ── FLOATING PETALS ── */
+#petals {
+    position:fixed; inset:0;
+    pointer-events:none; z-index:0; overflow:hidden;
+}
+
+/* ── WELCOME SCREEN ── */
+#welcome {
+    position:fixed; inset:0;
+    background: #0d0205;
+    z-index:8000;
+    display:flex; flex-direction:column;
+    justify-content:center; align-items:center; gap:18px;
+    transition: opacity 1.4s ease;
+}
+
+.w-heart {
+    font-size:4.5rem; color:#c8445a;
+    animation: hb 1.3s infinite;
+    filter: drop-shadow(0 0 25px rgba(200,68,90,0.7));
+}
+
+@keyframes hb {
+    0%,100% { transform:scale(1); }
+    14% { transform:scale(1.18); }
+    28% { transform:scale(1); }
+    42% { transform:scale(1.1); }
+}
+
+.w-name {
+    font-family:'Great Vibes',cursive;
+    font-size:4.5rem; color:#fff;
+    text-shadow: 0 0 40px rgba(200,68,90,0.5);
+    opacity:0; animation: fadeUp .9s .4s forwards;
+}
+
+.w-sub {
+    font-size:.65rem; letter-spacing:5px;
+    color:rgba(255,255,255,.35); text-transform:uppercase;
+    opacity:0; animation: fadeUp .9s .7s forwards;
+}
+
+.w-btn {
+    margin-top:10px;
+    background:none; border:1px solid #c8445a;
+    color:#c8445a; padding:14px 44px;
+    font-family:'Lato',sans-serif; font-size:.72rem;
+    letter-spacing:5px; text-transform:uppercase;
+    border-radius:50px; cursor:none;
+    transition: all .4s;
+    opacity:0; animation: fadeUp .9s 1s forwards;
+    position:relative; overflow:hidden;
+}
+
+.w-btn::before {
+    content:''; position:absolute; inset:0;
+    background:#c8445a; transform:scaleX(0);
+    transition:transform .4s ease; z-index:-1;
+}
+.w-btn:hover::before { transform:scaleX(1); }
+.w-btn:hover { color:#fff; box-shadow:0 0 30px rgba(200,68,90,.5); }
+
+@keyframes fadeUp {
+    from { opacity:0; transform:translateY(20px); }
+    to   { opacity:1; transform:translateY(0); }
+}
+
+/* ── PAGE LAYOUT ── */
+main {
+    position:relative; z-index:1;
+    max-width:780px; margin:0 auto;
+    padding:0 28px 100px;
+}
+
+/* ── HEADER ── */
+.site-header {
+    text-align:center;
+    padding: 90px 0 60px;
+    opacity:0; transform:translateY(30px);
+    transition: all 1s ease;
+}
+.site-header.show { opacity:1; transform:translateY(0); }
+
+.site-header .to {
+    font-size:.62rem; letter-spacing:5px;
+    text-transform:uppercase; color:var(--faded);
+    margin-bottom:14px;
+}
+
+.site-header h1 {
+    font-family:'Great Vibes',cursive;
+    font-size:5.5rem; color:var(--rose);
+    line-height:1;
+    filter: drop-shadow(0 2px 12px rgba(200,68,90,.2));
+}
+
+.site-header .tagline {
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic; font-size:1.1rem;
+    color:var(--faded); margin-top:16px;
+}
+
+.header-divider {
+    margin:40px auto 0;
+    width:1px; height:60px;
+    background:linear-gradient(to bottom, var(--rose), transparent);
+}
+
+/* ── LETTER CARD ── */
+.letter {
+    position:relative;
+    background: var(--paper);
+    border-radius:4px;
+    padding:60px 65px 55px;
+    margin-bottom:50px;
+    box-shadow:
+        0 2px 4px rgba(0,0,0,.04),
+        0 8px 30px rgba(0,0,0,.07),
+        0 30px 60px rgba(0,0,0,.05),
+        inset 0 0 0 1px rgba(200,68,90,.08);
+    opacity:0; transform:translateY(40px);
+    transition: opacity .9s ease, transform .9s ease;
+}
+
+.letter.show { opacity:1; transform:translateY(0); }
+
+/* Paper texture lines */
+.letter::before {
+    content:'';
+    position:absolute; inset:0;
+    background: repeating-linear-gradient(
+        transparent, transparent 27px,
+        rgba(200,68,90,.06) 28px
+    );
+    border-radius:4px;
+    pointer-events:none;
+}
+
+/* Fold corner */
+.letter::after {
+    content:'';
+    position:absolute; top:0; right:0;
+    width:38px; height:38px;
+    background:linear-gradient(225deg, var(--cream) 50%, rgba(200,68,90,.12) 50%);
+    border-bottom-left-radius:6px;
+}
+
+.letter-tag {
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:.58rem; letter-spacing:4px;
+    text-transform:uppercase; color:var(--rose);
+    margin-bottom:28px;
+    padding: 5px 14px;
+    border:1px solid rgba(200,68,90,.25);
+    border-radius:50px;
+}
+
+.letter-tag span { font-size:.85rem; }
+
+.letter h2 {
+    font-family:'Great Vibes',cursive;
+    font-size:3.2rem; color:var(--rose);
+    margin-bottom:28px; line-height:1.1;
+}
+
+.letter p {
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.13rem; line-height:2;
+    color:#2a1010;
+    margin-bottom:20px;
+    font-weight:400;
+}
+
+.letter p:last-of-type { margin-bottom:0; }
+
+.letter em { color:var(--rose); font-style:italic; }
+.letter strong { color:var(--rose); font-weight:600; }
+
+.letter-sign {
+    margin-top:36px;
+    text-align:right;
+    font-family:'Great Vibes',cursive;
+    font-size:2.2rem; color:var(--rose);
+    opacity:.8;
+}
+
+/* Red teardrop accent */
+.tear-drop {
+    position:absolute;
+    width:8px; height:8px;
+    background: rgba(200,68,90,.35);
+    border-radius:50% 50% 50% 0;
+    transform:rotate(-45deg);
+}
+
+/* ── LETTER SPECIFIC COLORS / FEELS ── */
+.letter-love { border-top:3px solid #c8445a; }
+.letter-sorry { border-top:3px solid #7a6060; }
+.letter-only  { border-top:3px solid #b03050; }
+
+.letter-sorry { background:#fdf4f4; }
+.letter-only  { background:#fef6f0; }
+
+/* ── DIVIDER BETWEEN LETTERS ── */
+.section-sep {
+    text-align:center; margin:10px 0 50px;
+    color:var(--blush); font-size:1.2rem;
+    letter-spacing:12px; opacity:.6;
+}
+
+/* ── CLOSING SEAL ── */
+.seal {
+    text-align:center; padding:60px 0 20px;
+    opacity:0; transform:scale(.9);
+    transition: all 1s ease;
+}
+.seal.show { opacity:1; transform:scale(1); }
+
+.seal-circle {
+    width:100px; height:100px;
+    border-radius:50%;
+    border:2px solid rgba(200,68,90,.4);
+    margin:0 auto 20px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:2.5rem;
+    animation: sealPulse 3s infinite;
+    box-shadow: 0 0 0 0 rgba(200,68,90,.3);
+}
+
+@keyframes sealPulse {
+    0%,100% { box-shadow:0 0 0 0 rgba(200,68,90,.3); }
+    50% { box-shadow:0 0 0 18px rgba(200,68,90,0); }
+}
+
+.seal p {
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic; font-size:1rem;
+    color:var(--faded); letter-spacing:1px;
+}
+
+/* ── MUSIC PLAYER ── */
+.music-player {
+    position:fixed; bottom:26px; right:26px;
+    background:rgba(13,2,5,.92);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(200,68,90,.2);
+    border-radius:18px; z-index:1001;
+    width:255px; overflow:hidden;
+    box-shadow:0 20px 60px rgba(0,0,0,.4);
+    transition:transform .3s;
+}
+
+.mp-top {
+    padding:14px 16px 10px;
+    display:flex; align-items:center; gap:12px;
+    border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+.mp-vinyl {
+    width:40px; height:40px; flex-shrink:0;
+    border-radius:50%;
+    background: conic-gradient(#1a0010 0deg,#3d0020 90deg,#1a0010 180deg,#3d0020 270deg,#1a0010 360deg);
+    border:3px solid #2a0015;
+    position:relative;
+}
+.mp-vinyl::after {
+    content:''; position:absolute; inset:35%;
+    background:var(--rose); border-radius:50%;
+    box-shadow:0 0 8px rgba(200,68,90,.6);
+}
+.mp-vinyl.spin { animation:vspin 3s linear infinite; }
+@keyframes vspin { to { transform:rotate(360deg); } }
+
+.mp-info { flex:1; min-width:0; }
+.mp-title {
+    font-size:.7rem; font-weight:500;
+    color:#fff; white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis;
+}
+.mp-sub {
+    font-size:.58rem; color:rgba(255,255,255,.35);
+    letter-spacing:1px; margin-top:2px;
+}
+
+.mp-body { padding:10px 16px 14px; }
+
+.mp-prog-wrap {
+    height:3px; background:rgba(255,255,255,.1);
+    border-radius:10px; margin-bottom:10px;
+    cursor:pointer; position:relative;
+}
+.mp-prog {
+    height:100%; width:0%;
+    background:linear-gradient(90deg,#b03050,#c8445a);
+    border-radius:10px; transition:width .6s linear;
+    position:relative;
+}
+.mp-prog::after {
+    content:''; position:absolute;
+    right:-4px; top:-3px;
+    width:9px; height:9px;
+    background:#fff; border-radius:50%;
+    box-shadow:0 0 6px rgba(200,68,90,.8);
+}
+
+.mp-time {
+    display:flex; justify-content:space-between;
+    font-size:.52rem; color:rgba(255,255,255,.28);
+    letter-spacing:1px; margin-bottom:9px;
+}
+
+.mp-btns {
+    display:flex; justify-content:center;
+    align-items:center; gap:16px;
+}
+
+.mp-btn {
+    background:none; border:none;
+    color:rgba(255,255,255,.5);
+    font-size:.85rem; cursor:none;
+    transition:color .2s, transform .2s;
+    padding:4px; display:flex; align-items:center;
+}
+.mp-btn:hover { color:#fff; transform:scale(1.15); }
+
+.mp-play {
+    width:36px; height:36px;
+    background:linear-gradient(135deg,#b03050,#c8445a);
+    border-radius:50%; display:flex;
+    align-items:center; justify-content:center;
+    color:#fff; font-size:.95rem;
+    box-shadow:0 4px 18px rgba(200,68,90,.5);
+    transition:all .3s;
+}
+.mp-play:hover { box-shadow:0 6px 26px rgba(200,68,90,.7); transform:scale(1.1); }
+
+.mp-wave {
+    display:flex; align-items:center; gap:2px;
+    height:14px; justify-content:center; margin-top:9px;
+}
+.mp-bar {
+    width:2px; background:var(--rose);
+    border-radius:2px; opacity:.45; height:3px;
+    transition:height .15s;
+}
+.mp-bar.on {
+    animation:wv .7s ease-in-out infinite;
+    opacity:.8;
+}
+@keyframes wv {
+    0%,100% { height:3px; }
+    50% { height:12px; }
+}
+
+/* saiyaara link row */
+.saiyaara-row {
+    display:none; text-align:center; margin-top:9px;
+}
+.saiyaara-row a {
+    display:inline-block;
+    background:linear-gradient(135deg,#b03050,#c8445a);
+    color:#fff; text-decoration:none;
+    font-size:.6rem; letter-spacing:2px;
+    padding:7px 18px; border-radius:50px;
+    transition:box-shadow .3s;
+}
+.saiyaara-row a:hover { box-shadow:0 0 20px rgba(200,68,90,.6); }
+
+/* ── SCROLL FADE-IN ── */
+@keyframes scrollIn {
+    from { opacity:0; transform:translateY(35px); }
+    to   { opacity:1; transform:translateY(0); }
+}
+
+/* ── MOBILE ── */
+@media(max-width:600px){
+    .site-header h1 { font-size:3.8rem; }
+    .letter { padding:40px 28px 38px; }
+    .letter h2 { font-size:2.5rem; }
+    .music-player { width:calc(100vw - 40px); right:20px; bottom:20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div id="cur"></div>
+
+<!-- Petals -->
+<div id="petals"></div>
+
+<!-- Music -->
+<audio id="bg-audio" src="_Tum Hi Ho_.mp3" loop preload="auto"></audio>
+
+<!-- Welcome -->
+<div id="welcome">
+    <div class="w-heart">❤</div>
+    <div class="w-name">Diya</div>
+    <div class="w-sub">Something important — from my heart to yours</div>
+    <button class="w-btn" onclick="openPage()">Read My Heart</button>
+</div>
+
+<!-- Music Player -->
+<div class="music-player">
+    <div class="mp-top">
+        <div class="mp-vinyl" id="mpVinyl"></div>
+        <div class="mp-info">
+            <div class="mp-title" id="mpTitle">Saiyaara</div>
+            <div class="mp-sub">Playing for Diya ❤</div>
+        </div>
+    </div>
+    <div class="mp-body">
+        <div class="mp-prog-wrap" id="mpProgWrap">
+            <div class="mp-prog" id="mpProg"></div>
+        </div>
+        <div class="mp-time">
+            <span id="mpCur">0:00</span>
+            <span id="mpDur">--:--</span>
+        </div>
+        <div class="mp-btns">
+            <button class="mp-btn" onclick="seek(-10)">⏪</button>
+            <button class="mp-btn mp-play" id="mpPlayBtn" onclick="togglePlay()">▶</button>
+            <button class="mp-btn" onclick="seek(10)">⏩</button>
+        </div>
+        <div class="mp-wave" id="mpWave"></div>
+        <div class="saiyaara-row" id="saiyaaraRow">
+            <a href="https://www.youtube.com/results?search_query=saiyaara+bollywood+song" target="_blank">▶ OPEN ON YOUTUBE</a>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<main id="main-content" style="display:none;">
+
+    <!-- Header -->
+    <header class="site-header" id="siteHeader">
+        <div class="to">A letter for</div>
+        <h1>My Babu</h1>
+        <p class="tagline">"Three things I need you to know. Please read every word."</p>
+        <div class="header-divider"></div>
+    </header>
+
+    <!-- ══ LETTER 1 — HOW MUCH I LOVE HER ══ -->
+    <article class="letter letter-love" id="l1">
+        <div class="tear-drop" style="bottom:30px;left:55px;"></div>
+        <div class="letter-tag"><span>❤</span> Letter One</div>
+        <h2>How Much I Love You</h2>
+
+        <p>Babu, I have tried a hundred times to explain this feeling — and every time, words feel too small. Too ordinary. Like trying to hold the ocean in a paper cup. But I will try again, because you deserve to hear it.</p>
+
+        <p>I love you in the way that is <em>quiet and permanent</em>. Not the loud, dramatic kind that burns bright for a season and disappears. The kind that sits in my chest like a second heartbeat. The kind that makes me think of you when something makes me laugh, when something makes me sad, when something makes me wonder — because you are the first person my mind runs to, every single time.</p>
+
+        <p>You are not just someone I am with, Diya. You are the person who changed the shape of my life. Before you, I was existing. <strong>With you, I am living.</strong> You brought warmth into corners of me I had given up on. You made me feel things I had convinced myself I was not capable of feeling.</p>
+
+        <p>I love the way you think. The way you laugh when something genuinely catches you. The way you care — deeply, quietly, without making a show of it. I love the version of you that the world sees, and I love even more the version only I get to see — the soft, unguarded one. The one you only let through when you feel safe.</p>
+
+        <p>You are my favourite part of every day, Babu. Even the days we spend apart — you are still there, woven into everything I do. And I just need you to know that <strong>this love I carry for you is not a passing thing. It is not going anywhere. It is yours — completely, entirely, forever.</strong></p>
+
+        <div class="letter-sign">— Always, Your Babu</div>
+    </article>
+
+    <div class="section-sep">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <!-- ══ LETTER 2 — SORRY ══ -->
+    <article class="letter letter-sorry" id="l2">
+        <div class="tear-drop" style="top:40px;right:70px; transform:rotate(135deg);"></div>
+        <div class="letter-tag"><span>🙏</span> Letter Two</div>
+        <h2>I Am So Sorry</h2>
+
+        <p>This letter is the hardest one to write. Not because I don't mean it — but because I mean it so completely, and I am afraid that words alone will not be enough to show you that.</p>
+
+        <p>Babu, I have not always been the person you deserved. There were moments I was too proud, too stubborn, too careless with your feelings. Moments I said things I cannot take back. Moments I chose my ego over your heart — and those moments haunt me, because <em>you never deserved any of it.</em></p>
+
+        <p>I am sorry for every time I made you cry when all you wanted was to be understood. I am sorry for every time I went cold when you needed warmth. For every argument that could have been avoided if I had just listened — really listened — instead of waiting to be right.</p>
+
+        <p>I am sorry for the times you needed me and I wasn't fully there. For the moments I took your patience for granted, not realising how much courage it takes to keep loving someone through their worst. You gave me that courage over and over again. <strong>I did not always honour it the way I should have.</strong></p>
+
+        <p>I want you to know that every wrong thing I did came from a place of being broken, not from a place of not loving you enough. I have always loved you — even in my worst moments. But I know that love without effort means nothing. And so I am not just saying sorry with these words.</p>
+
+        <p>I am saying sorry with the promise that <em>I am trying to be better</em>. Every single day. For you. Because you are worth every bit of the effort it takes to be the person you deserve to be loved by.</p>
+
+        <p>Please forgive me, Babu. Not because I deserve it — but because my heart will never stop asking for it.</p>
+
+        <div class="letter-sign">— Yours, Broken but Trying</div>
+    </article>
+
+    <div class="section-sep">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <!-- ══ LETTER 3 — I DON'T HAVE ANYONE EXCEPT YOU ══ -->
+    <article class="letter letter-only" id="l3">
+        <div class="tear-drop" style="bottom:50px;right:60px; transform:rotate(90deg);"></div>
+        <div class="letter-tag"><span>🌙</span> Letter Three</div>
+        <h2>You Are All I Have</h2>
+
+        <p>Diya, I need you to understand something that I have never been able to say out loud without my voice breaking.</p>
+
+        <p>I don't have anyone else. Not the way I have you.</p>
+
+        <p>I have people around me — faces, names, conversations. But <em>you</em> are the only person in my life who has ever made me feel like I am not alone in this world. The only one I can be completely honest with. The only one I trust with the real version of me — the afraid one, the tired one, the one that doesn't have everything figured out.</p>
+
+        <p>When the world feels like too much, <strong>you are the only person I want to run to</strong>. When I am happy, you are the first person I want to tell. When I am hurting, you are the only one whose voice makes it quieter. That is not a small thing, Babu. That is everything.</p>
+
+        <p>I know I don't always show this the way I should. Sometimes I pull away when I should hold on. Sometimes I go quiet when I should speak. But please know that my silence is never emptiness — it is always filled with you. With how much I need you. With how terrified I am of a life without you in it.</p>
+
+        <p>You are my home. My only real one. <em>The one person who makes this world feel like a place worth staying in.</em> And I am writing this because I need you to carry that with you — on the days you doubt me, on the days you wonder if you matter to me — you matter more than I have the words to say.</p>
+
+        <p><strong>You are not just part of my life, Diya. You are the reason I have one worth living.</strong> Please never forget that. Please never leave.</p>
+
+        <div class="letter-sign">— Yours, Completely and Only</div>
+    </article>
+
+    <!-- Closing Seal -->
+    <div class="seal" id="seal">
+        <div class="seal-circle">❤</div>
+        <p>Written with every piece of me — for you, always.</p>
+        <p style="margin-top:8px; font-size:.62rem; letter-spacing:3px; color:var(--faded); font-family:'Lato',sans-serif;">DIYA · MY BABU · MY EVERYTHING</p>
+    </div>
+
+</main>
+
+<script>
+// ── CURSOR ──
+const cur = document.getElementById('cur');
+document.addEventListener('mousemove', e => {
+    cur.style.left = e.clientX + 'px';
+    cur.style.top  = e.clientY + 'px';
+});
+
+// ── PETALS ──
+const petalContainer = document.getElementById('petals');
+const petalSymbols = ['❤','✦','🌸','·','✿','♡'];
+function spawnPetal() {
+    const p = document.createElement('div');
+    p.textContent = petalSymbols[Math.floor(Math.random() * petalSymbols.length)];
+    const size = Math.random() * 14 + 7;
+    p.style.cssText = `
+        position:absolute;
+        font-size:${size}px;
+        color:rgba(200,68,90,${Math.random()*.18+.04});
+        left:${Math.random()*100}vw;
+        top:105vh;
+        pointer-events:none;
+        transition:transform ${Math.random()*7+7}s linear;
+        will-change:transform;
+    `;
+    petalContainer.appendChild(p);
+    requestAnimationFrame(() => {
+        p.style.transform = `translateY(-115vh) rotate(${Math.random()*400-200}deg)`;
+    });
+    setTimeout(() => p.remove(), 15000);
+}
+setInterval(spawnPetal, 600);
+
+// ── WELCOME → OPEN ──
+function openPage() {
+    // Unlock and start audio (user gesture required on mobile)
+    const audio = document.getElementById('bg-audio');
+    audio.play().then(() => {
+        isPlaying = true;
+        updatePlayerUI(true);
+        startProgress();
+    }).catch(() => {
+        // If mp3 not found, show YouTube fallback
+        document.getElementById('saiyaaraRow').style.display = 'block';
+        document.getElementById('mpTitle').textContent = 'Saiyaara ❤';
+    });
+
+    // Fade out welcome
+    const w = document.getElementById('welcome');
+    w.style.opacity = '0';
+    setTimeout(() => {
+        w.style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('siteHeader').classList.add('show');
+            setTimeout(() => revealLetters(), 600);
+        }, 100);
+    }, 1400);
+}
+
+// ── SCROLL REVEAL ──
+function revealLetters() {
+    const els = ['l1','l2','l3','seal'];
+    els.forEach((id, i) => {
+        setTimeout(() => {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('show');
+        }, i * 420);
+    });
+
+    // Also observe scroll for later elements
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.letter, .seal').forEach(el => observer.observe(el));
+}
+
+// ── MUSIC PLAYER ──
+const audio = document.getElementById('bg-audio');
+let isPlaying = false;
+let progressTimer = null;
+
+function togglePlay() {
+    if (isPlaying) {
+        audio.pause();
+        isPlaying = false;
+        updatePlayerUI(false);
+        clearInterval(progressTimer);
+    } else {
+        audio.play().catch(() => {
+            document.getElementById('saiyaaraRow').style.display = 'block';
+        });
+        isPlaying = true;
+        updatePlayerUI(true);
+        startProgress();
+    }
+}
+
+function seek(sec) {
+    if (!audio.duration) return;
+    audio.currentTime = Math.max(0, Math.min(audio.duration, audio.currentTime + sec));
+}
+
+function updatePlayerUI(playing) {
+    document.getElementById('mpPlayBtn').textContent = playing ? '⏸' : '▶';
+    const vinyl = document.getElementById('mpVinyl');
+    playing ? vinyl.classList.add('spin') : vinyl.classList.remove('spin');
+    document.querySelectorAll('.mp-bar').forEach(b => {
+        playing ? b.classList.add('on') : b.classList.remove('on');
+    });
+}
+
+function startProgress() {
+    clearInterval(progressTimer);
+    progressTimer = setInterval(() => {
+        if (!audio.duration) return;
+        const pct = (audio.currentTime / audio.duration) * 100;
+        document.getElementById('mpProg').style.width = pct + '%';
+        document.getElementById('mpCur').textContent = fmtTime(audio.currentTime);
+        document.getElementById('mpDur').textContent = fmtTime(audio.duration);
+    }, 500);
+}
+
+function fmtTime(s) {
+    const m = Math.floor(s / 60);
+    return m + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+}
+
+// Progress bar click to seek
+document.getElementById('mpProgWrap').addEventListener('click', function(e) {
+    if (!audio.duration) return;
+    const rect = this.getBoundingClientRect();
+    audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+});
+
+// Auto-update when audio ends (loop attribute handles it, but UI sync)
+audio.addEventListener('play', () => { isPlaying = true; updatePlayerUI(true); startProgress(); });
+audio.addEventListener('pause', () => { isPlaying = false; updatePlayerUI(false); });
+
+// If mp3 file missing, show YouTube fallback silently
+audio.addEventListener('error', () => {
+    document.getElementById('saiyaaraRow').style.display = 'block';
+    document.getElementById('mpTitle').textContent = 'Saiyaara ❤';
+    document.getElementById('mpProg').style.width = '0%';
+});
+
+// ── WAVEFORM BARS ──
+const waveEl = document.getElementById('mpWave');
+for (let i = 0; i < 20; i++) {
+    const b = document.createElement('div');
+    b.className = 'mp-bar';
+    b.style.animationDelay = (i * 0.07) + 's';
+    b.style.animationDuration = (.45 + Math.random() * .55) + 's';
+    waveEl.appendChild(b);
+}
+</script>
+</body>
+</html>
